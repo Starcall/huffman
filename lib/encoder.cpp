@@ -5,12 +5,12 @@
 #include <vector>
 #include "encoder.h"
 
-std::vector<unsigned char> encoder::encode(std::vector<unsigned char> &text) {
-    std::vector<unsigned char> ans;
+std::vector<bool> encoder::encode(std::vector<unsigned char> &text) {
+    std::vector<bool> ans;
     for (unsigned char &c : text) {
         uint64_t curCode = tree.get_code(c);
         for (size_t i = 0; i < tree.get_size(c); i++) {
-            auto curBit = static_cast<unsigned char>(curCode % 2);
+            auto curBit = static_cast<bool>(curCode % 2);
             ans.push_back(curBit);
             curCode /= 2;
         }

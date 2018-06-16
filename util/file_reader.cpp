@@ -32,6 +32,10 @@ bool file_reader::eof() {
     return (len == 0);
 }
 
+size_t file_reader::rest() {
+    return len;
+}
+
 size_t file_reader::read(char *buffer, size_t buffer_size) {
 
     buffer_size = std::min(buffer_size, len);

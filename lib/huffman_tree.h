@@ -52,6 +52,13 @@ private:
             this->count = count;
             this->term = is_term;
         }
+        ~node () {
+            if (this->left_child) delete left_child;
+            if (this->right_child) delete right_child;
+            this->left_child = nullptr;
+            this->right_child = nullptr;
+        }
+
     };
 
     node* root{};

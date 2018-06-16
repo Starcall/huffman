@@ -6,6 +6,7 @@
 #include "decompressor.h"
 #include <ctime>
 int main(int argc, char* argv[]) {
+
     if (argc == 2) {
         if ((std::string)argv[1] == "-h") {
             std::cout << "Program arguments -e to encode, -d to decode\n, -de to encode and decode (option for testers)";

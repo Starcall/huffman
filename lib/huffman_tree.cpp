@@ -46,12 +46,12 @@ uint64_t huffman_tree::get_code(unsigned char symbol) {
 void huffman_tree::count_codes(huffman_tree::node *cur_node, uint64_t cur_code, size_t depth) {
     if (cur_node == nullptr)
         return;
-    count_codes(cur_node->left_child, cur_code * 2, depth + 1);
+    count_codes(cur_node->left_child, cur_code << 1, depth + 1);
     if (cur_node->term) {
         codes[cur_node->symbol] = cur_code;
         sz[cur_node->symbol] = depth;
     }
-    count_codes(cur_node->right_child, cur_code * 2 + 1, depth + 1);
+    count_codes(cur_node->right_child, (cur_code << 1) + 1, depth + 1);
 }
 
 void huffman_tree::move_left() {

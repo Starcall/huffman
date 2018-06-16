@@ -8,33 +8,36 @@
 void compressor::compress(std::string w) {
     encoder Encoder(frequency);
     file_writer fw(w);
+    size_t cnt = 0;
+    char buffer[fw.MAX_WRITE];
     for (size_t i = 0; i < 256; i++) {
-        size_t sz = 8;
-        char buffer[sz];
         size_t cur = frequency[i];
-        for (int i = sz - 1; i >= 0; i--) {
-            buffer[i] = static_cast<char>(cur % 256);
-            cur /= 256;
+        for (int j = 7; j >= 0; j--) {
+            buffer[cnt + j] = static_cast<char>(cur & 255);
+            cur >>= 8;// 256;
         }
-        fw.write(buffer, sz);
+        cnt += 8;
+        if (cnt == fw.MAX_WRITE) {
+            fw.write(buffer, fw.MAX_WRITE);
+            cnt = 0;
+        }
+
     }
     file_reader reader(file_name);
-    std::vector<unsigned char> remain;
+    std::vector<bool> remain;
     while (!reader.eof()) {
-        char buffer[reader.MAX_READ];
-        size_t readed = reader.read(buffer, reader.MAX_READ);
-        std::vector<unsigned char> buffer_cpy;
-        for (size_t i = 0; i < readed; i++)
-            buffer_cpy.push_back(static_cast<unsigned char>(buffer[i]));
-        auto t = Encoder.encode(buffer_cpy);
+        char new_buffer[reader.MAX_READ];
+        size_t readed = reader.read(new_buffer, reader.MAX_READ);
+
+        auto t = Encoder.encode(new_buffer, readed);
         t.insert(t.begin(), remain.begin(), remain.end());
         remain.resize(0);
-        size_t cnt = 0;
+        cnt = 0;
         for (size_t i = 0; i + 8 <= t.size(); i += 8) {
             unsigned char curChar = 0;
             for (size_t j = 0; j < 8; j++) {
-                curChar *= 2;
-                curChar += t[j + i];
+                curChar <<= 1;
+                curChar |= t[j + i];
             }
             buffer[cnt] = curChar;
             if (cnt == fw.MAX_WRITE - 1)
@@ -48,7 +51,7 @@ void compressor::compress(std::string w) {
             if (cnt == fw.MAX_WRITE)
                 cnt = 0;
         }
-        if ((t.size() % 8) != 0) {
+        if ((t.size() & 7) != 0) {
             size_t pos = t.size() / 8 * 8;
             for (size_t i = pos; i < t.size(); i++) {
                 remain.push_back(t[i]);
@@ -57,13 +60,12 @@ void compressor::compress(std::string w) {
     }
     unsigned char curChar = 0;
     size_t cur = 7;
-    for (unsigned char j : remain) {
+    for (bool j : remain) {
         if (j) {
             curChar += (1 << cur);
         }
         cur--;
     }
-    char buffer[1];
     buffer[0] = curChar;
     fw.write(buffer, 1);
 

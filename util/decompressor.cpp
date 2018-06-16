@@ -11,9 +11,9 @@
 void decompressor::get_frequency() {
     frequency.resize(256);
     file_reader fr(file_name);
-    char buffer[2048];
-    fr.read(buffer, 2048);
-    for (size_t i = 0; i < 2048 / 8; i++) {
+    char buffer[fr.MAX_READ];
+    fr.read(buffer, fr.MAX_READ);
+    for (size_t i = 0; i < fr.MAX_READ / 8; i++) {
         size_t cur = 0;
         for (size_t j = 0; j < 8; j++) {
             cur *= 256;
@@ -22,7 +22,16 @@ void decompressor::get_frequency() {
         }
         frequency[i] = cur;
     }
-
+    fr.read(buffer, fr.MAX_READ);
+    for (size_t i = 0; i < fr.MAX_READ / 8; i++) {
+        size_t cur = 0;
+        for (size_t j = 0; j < 8; j++) {
+            cur *= 256;
+            size_t x = static_cast<unsigned char>(buffer[i * 8 + j]);
+            cur += x;
+        }
+        frequency[i + fr.MAX_READ / 8] = cur;
+    }
 }
 
 void decompressor::decompress(std::string to) {
@@ -30,7 +39,8 @@ void decompressor::decompress(std::string to) {
     file_reader fr(file_name);
     file_writer fw(to);
     char buffer[fr.MAX_READ];
-    size_t foo = fr.read(buffer, 2048);
+    size_t foo = fr.read(buffer, fr.MAX_READ);
+    foo = fr.read(buffer, fr.MAX_READ);
     std::vector<unsigned char> remain;
     while (!fr.eof()) {
         size_t readed = fr.read(buffer, fr.MAX_READ);

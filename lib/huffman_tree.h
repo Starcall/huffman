@@ -58,8 +58,8 @@ private:
             this->term = is_term;
         }
         ~node () {
-            if (this->left_child) delete left_child;
-            if (this->right_child) delete right_child;
+            if (this->left_child != nullptr) delete left_child;
+            if (this->right_child != nullptr) delete right_child;
             this->left_child = nullptr;
             this->right_child = nullptr;
         }

@@ -101,7 +101,7 @@ TEST(correctness, random) {
         std::string file = "my_test";
         std::ofstream out(file + ".in");
         std::string test = "";
-        size_t cnt = rand() % 1000000;
+        size_t cnt = rand() % 10000;
         for (size_t i = 0; i < cnt; i++) {
             char c = rand() % 255;
             if (c == '\n') continue;

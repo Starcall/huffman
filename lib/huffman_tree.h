@@ -29,8 +29,9 @@ struct huffman_tree {
 
 
     ~huffman_tree() {
-        delete root;
-        delete currentNode;
+        if (root != nullptr)
+            delete root;
+        root = nullptr;
     };
 
 private:

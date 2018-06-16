@@ -107,7 +107,7 @@ TEST(correctness, random_without_new_lines) {
             if (c == '\n') continue;
             test += c;
         }
-        
+
         out << test;
         out.close();
         compressor fe(file + ".in");
@@ -122,4 +122,25 @@ TEST(correctness, random_without_new_lines) {
 
         EXPECT_EQ(res, test);
     }
+}
+
+
+TEST(correctness, mb_200_test) {
+        std::string test = "";
+        std::ifstream o("new_file");
+        char c;
+        while (o >> c) test += c;
+        o.close();
+        compressor fe("new_file");
+        fe.compress("new_file.huf");
+        decompressor fd("new_file.huf");
+        fd.decompress("new_file.out");
+
+        std::ifstream in("new_file.out");
+        std::string res;
+
+        while (in >> c) res += c;
+        in.close();
+
+        EXPECT_EQ(res, test);
 }

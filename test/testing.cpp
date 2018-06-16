@@ -95,7 +95,7 @@ TEST(correctness, all_symbols) {
     EXPECT_EQ(res, test);
 }
 
-TEST(correctness, random_without_new_lines) {
+TEST(correctness, random) {
     srand(time(0));
     for (size_t w = 0; w < 10; w++) {
         std::string file = "my_test";

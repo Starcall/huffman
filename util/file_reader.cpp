@@ -19,7 +19,7 @@ void file_reader:: open(std::string file_name) {
     sstream.open(file_name, std::ifstream::in | std::ifstream::binary);
     if (!sstream.is_open()) {
         sstream.close();
-        throw std::runtime_error("No such file founчd");
+        throw std::runtime_error("No such file found");
     }
     sstream.seekg (0, sstream.end);
     len = static_cast<size_t>(sstream.tellg());
@@ -36,9 +36,9 @@ size_t file_reader::rest() {
 }
 
 size_t file_reader::read(char *buffer, size_t buffer_size) {
-
     buffer_size = std::min(buffer_size, len);
     sstream.read(buffer, buffer_size);
+
     len -= buffer_size;
     return buffer_size;
 }

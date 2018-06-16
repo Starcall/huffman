@@ -62,8 +62,8 @@ void decompressor::decompress(std::string to) {
         //for (auto i : decoded) std::cout << (char)i;
         char fw_buffer[fw.MAX_WRITE];
         size_t cnt = 0;
-        for (size_t i = 0; i < decoded.size(); i++) {
-            fw_buffer[cnt] = decoded[i];
+        for (unsigned char i : decoded) {
+            fw_buffer[cnt] = i;
             cnt++;
             if (cnt == fw.MAX_WRITE) {
                 cnt = 0;

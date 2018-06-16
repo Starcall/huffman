@@ -26,7 +26,10 @@ struct huffman_tree {
     void reset();
 
 
-    ~huffman_tree() = default;
+    ~huffman_tree() {
+        delete root;
+        delete currentNode;
+    };
 
 private:
 

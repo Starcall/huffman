@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <cmath>
 #include "compressor.h"
 
 void compressor::compress(std::string w) {
@@ -13,8 +12,8 @@ void compressor::compress(std::string w) {
         size_t sz = 8;
         char buffer[sz];
         size_t cur = frequency[i];
-        for (auto j = static_cast<int>(sz - 1); j >= 0; j--) {
-            buffer[j] = static_cast<char>(cur % 256);
+        for (int i = sz - 1; i >= 0; i--) {
+            buffer[i] = static_cast<char>(cur % 256);
             cur /= 256;
         }
         fw.write(buffer, sz);
@@ -49,7 +48,7 @@ void compressor::compress(std::string w) {
             if (cnt == fw.MAX_WRITE)
                 cnt = 0;
         }
-        if ((t.size() & (1u << 3)) != 0) {
+        if ((t.size() % 8) != 0) {
             size_t pos = t.size() / 8 * 8;
             for (size_t i = pos; i < t.size(); i++) {
                 remain.push_back(t[i]);
@@ -60,13 +59,14 @@ void compressor::compress(std::string w) {
     size_t cur = 7;
     for (unsigned char j : remain) {
         if (j) {
-            curChar += std::pow(2, cur);
+            curChar += (1 << cur);
         }
         cur--;
     }
     char buffer[1];
-        buffer[0] = curChar;
-        fw.write(buffer, 1);
+    buffer[0] = curChar;
+    fw.write(buffer, 1);
+
     buffer[0] = static_cast<char>(8 - remain.size());
     fw.write(buffer, 1);
 

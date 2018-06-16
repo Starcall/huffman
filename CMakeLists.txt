@@ -1,7 +1,50 @@
-cmake_minimum_required(VERSION 3.9)
-project(haffmun)
+cmake_minimum_required(VERSION 2.8)
 
-set(CMAKE_CXX_STANDARD 11)
+project(HUFFMAN)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
-add_executable(haffmun util/main.cpp lib/huffman_tree.h lib/huffman_tree.cpp lib/encoder.h util/file_writer.h util/file_writer.cpp util/file_reader.h util/file_reader.cpp lib/encoder.cpp lib/decoder.h lib/decoder.cpp util/compressor.h util/compressor.cpp util/decompressor.h util/decompressor.cpp)
+include_directories(${HUFFMAN_SOURCE_DIR})
+
+add_executable(main
+        util/main.cpp
+        util/compressor.cpp
+        util/compressor.h
+        util/decompressor.h
+        util/decompressor.cpp
+        util/file_reader.cpp
+        util/file_reader.h
+        util/file_writer.cpp
+        util/file_writer.h
+        lib/huffman_tree.cpp
+        lib/huffman_tree.h
+        lib/encoder.cpp
+        lib/decoder.cpp
+        lib/encoder.h
+        lib/decoder.h
+        )
+
+add_executable(testing
+        gtest/gtest-all.cc
+        gtest/gtest.h
+        gtest/gtest_main.cc
+        test/testing.cpp
+        util/compressor.cpp
+        util/compressor.h
+        util/decompressor.h
+        util/decompressor.cpp
+        util/file_reader.cpp
+        util/file_reader.h
+        util/file_writer.cpp
+        util/file_writer.h
+        lib/huffman_tree.cpp
+        lib/huffman_tree.h
+        lib/encoder.cpp
+        lib/decoder.cpp
+        lib/encoder.h
+        lib/decoder.h
+        )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pedantic")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -fsanitize=address,undefined -D_GLIBCXX_DEBUG")
+
+
+target_link_libraries(main -lpthread)
+target_link_libraries(testing -lpthread)

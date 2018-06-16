@@ -29,7 +29,7 @@ std::vector<unsigned char> decoder::decode(std::vector<unsigned char> &text, siz
             tree.move_left();
         }
     }
-    if (tree.is_leaf()) {
+    if (!realText.empty() && tree.is_leaf()) {
         ans.push_back(tree.get_symbol());
         tree.reset();
     }

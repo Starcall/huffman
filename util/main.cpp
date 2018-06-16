@@ -14,11 +14,22 @@ int main(int argc, char* argv[]) {
         }
         return 0;
     }
+
     if (argc != 4) {
         std::cout << "No such options. Type -h to see usage\n";
     } else {
         try {
-            if ((std::string)argv[1] == "-e") {
+            if ((std::string)argv[1] == "-ed") {
+                compressor Compress(argv[2]);
+                double curTime = std::clock();
+                Compress.compress("foo.huf");
+                std::cout << "Compression done in: " << std::fixed << 1.0 * (std::clock() - curTime) / CLOCKS_PER_SEC << std::endl;
+                decompressor Decompress("foo.huf");
+                curTime = std::clock();
+                Decompress.decompress(argv[3]);
+                std::cout << "Decompression done in: " << std::fixed << 1.0 * (std::clock() - curTime) / CLOCKS_PER_SEC << std::endl;
+
+            } else if ((std::string)argv[1] == "-e") {
                 compressor Compress(argv[2]);
                 double curTime = std::clock();
                 Compress.compress(argv[3]);

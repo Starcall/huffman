@@ -15,7 +15,7 @@ struct file_reader {
     size_t read(char* buffer, size_t buffer_size);
     bool eof();
     void reset();
-    const size_t MAX_READ = 2048;
+    const size_t MAX_READ = 1024;
 
 
 

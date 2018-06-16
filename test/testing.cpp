@@ -96,12 +96,13 @@ TEST(correctness, all_symbols) {
 }
 
 TEST(correctness, random_without_new_lines) {
-    //srand(time(0));
-    for (size_t w = 0; w < 1000; w++) {
+    srand(time(0));
+    for (size_t w = 0; w < 10; w++) {
         std::string file = "my_test";
         std::ofstream out(file + ".in");
         std::string test = "";
-        for (size_t i = 0; i < rand() % 1000000000; i++) {
+        size_t cnt = rand() % 1000000;
+        for (size_t i = 0; i < cnt; i++) {
             char c = rand() % 255;
             if (c == '\n') continue;
             test += c;

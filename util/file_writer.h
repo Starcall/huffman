@@ -13,7 +13,7 @@ struct file_writer {
     ~file_writer();
     void write(char* buffer, size_t buffer_size);
     const size_t MAX_WRITE = 1024;
-   // private:
+    private:
         std::ofstream sstream;
 
 

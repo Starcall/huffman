@@ -12,7 +12,7 @@
 struct encoder {
     //encoder() = delete;
     explicit encoder(std::vector<size_t> &data) : tree(data) {};
-    std::vector<bool> encode(char*, size_t );
+    std::vector<unsigned char> encode(char*, size_t ) noexcept ;
 
 private:
     huffman_tree tree;

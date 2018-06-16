@@ -22,7 +22,6 @@ void file_reader:: open(std::string file_name) {
         throw std::runtime_error("No such file founчd");
     }
     sstream.seekg (0, sstream.end);
-
     len = static_cast<size_t>(sstream.tellg());
     sstream.seekg (0, sstream.beg);
 
@@ -44,9 +43,3 @@ size_t file_reader::read(char *buffer, size_t buffer_size) {
     return buffer_size;
 }
 
-void file_reader::reset() {
-   // sstream.clear();
-    sstream.seekg (0, sstream.end);
-    len = static_cast<size_t>(sstream.tellg());
-    sstream.seekg (0, sstream.beg);
-}

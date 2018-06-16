@@ -14,7 +14,7 @@ void compressor::compress(std::string w) {
         size_t cur = frequency[i];
         for (int j = 7; j >= 0; j--) {
             buffer[cnt + j] = static_cast<char>(cur & 255);
-            cur >>= 8;// 256;
+            cur >>= 8;
         }
         cnt += 8;
         if (cnt == fw.MAX_WRITE) {
@@ -24,11 +24,10 @@ void compressor::compress(std::string w) {
 
     }
     file_reader reader(file_name);
-    std::vector<bool> remain;
+    std::vector<unsigned char> remain;
     while (!reader.eof()) {
         char new_buffer[reader.MAX_READ];
         size_t readed = reader.read(new_buffer, reader.MAX_READ);
-
         auto t = Encoder.encode(new_buffer, readed);
         t.insert(t.begin(), remain.begin(), remain.end());
         remain.resize(0);
@@ -40,38 +39,32 @@ void compressor::compress(std::string w) {
                 curChar |= t[j + i];
             }
             buffer[cnt] = curChar;
-            if (cnt == fw.MAX_WRITE - 1)
-                fw.write(buffer, fw.MAX_WRITE);
-            else {
-                if (i + 8 + 8 > t.size()) {
-                    fw.write(buffer, cnt + 1);
-                }
-            }
             cnt++;
-            if (cnt == fw.MAX_WRITE)
+            if (cnt == fw.MAX_WRITE) {
+                fw.write(buffer, fw.MAX_WRITE);
                 cnt = 0;
+            }
+        }
+        if (cnt) {
+            fw.write(buffer, cnt);
         }
         if ((t.size() & 7) != 0) {
             size_t pos = t.size() / 8 * 8;
-            for (size_t i = pos; i < t.size(); i++) {
-                remain.push_back(t[i]);
-            }
+            remain.resize(t.size() - pos);
+            std::copy(t.begin() + pos, t.end(), remain.begin());
         }
     }
     unsigned char curChar = 0;
     size_t cur = 7;
-    for (bool j : remain) {
+    for (unsigned char j : remain) {
         if (j) {
             curChar += (1 << cur);
         }
         cur--;
     }
     buffer[0] = curChar;
-    fw.write(buffer, 1);
-
-    buffer[0] = static_cast<char>(8 - remain.size());
-    fw.write(buffer, 1);
-
+    buffer[1] = static_cast<char>(8 - remain.size());
+    fw.write(buffer, 2);
 }
 
 void compressor::get_frequency() {

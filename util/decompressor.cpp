@@ -11,26 +11,15 @@
 void decompressor::get_frequency() {
     frequency.resize(256);
     file_reader fr(file_name);
-    char buffer[fr.MAX_READ];
-    fr.read(buffer, fr.MAX_READ);
-    for (size_t i = 0; i < fr.MAX_READ / 8; i++) {
+    char buffer[2048];
+    fr.read(buffer, 2048);
+    for (size_t i = 0; i < 2048 / 8; i++) {
         size_t cur = 0;
         for (size_t j = 0; j < 8; j++) {
-            cur *= 256;
-            size_t x = static_cast<unsigned char>(buffer[i * 8 + j]);
-            cur += x;
+            cur <<= 8;
+            cur += static_cast<unsigned char>(buffer[i * 8 + j]);
         }
         frequency[i] = cur;
-    }
-    fr.read(buffer, fr.MAX_READ);
-    for (size_t i = 0; i < fr.MAX_READ / 8; i++) {
-        size_t cur = 0;
-        for (size_t j = 0; j < 8; j++) {
-            cur *= 256;
-            size_t x = static_cast<unsigned char>(buffer[i * 8 + j]);
-            cur += x;
-        }
-        frequency[i + fr.MAX_READ / 8] = cur;
     }
 }
 
@@ -39,13 +28,11 @@ void decompressor::decompress(std::string to) {
     file_reader fr(file_name);
     file_writer fw(to);
     char buffer[fr.MAX_READ];
-    size_t foo = fr.read(buffer, fr.MAX_READ);
-    foo = fr.read(buffer, fr.MAX_READ);
+    fr.read(buffer, 2048);
     std::vector<unsigned char> remain;
     while (!fr.eof()) {
         size_t readed = fr.read(buffer, fr.MAX_READ);
         size_t fool = 0;
-        std::vector<unsigned char> buffer_cpy;
         if (fr.rest() == 1) {
             char new_buffer[1];
             fr.read(new_buffer, 1);
@@ -55,10 +42,22 @@ void decompressor::decompress(std::string to) {
                 fool = static_cast<size_t>(8 + static_cast<unsigned char>(buffer[readed - 1]));
             }
         }
+        std::vector<unsigned char> realText;
+        for (size_t i = 0; i < readed; i++) {
+            for (int j = 7; j >= 0; j--) {
+                if ((buffer[i] & (1 << j)) != 0) {
+                    realText.push_back(1);
+                } else {
+                    realText.push_back(0);
+                }
+            }
+        }
+        if (realText.size() < fool) {
+            throw std::runtime_error("My code does not work, sorry");
+        }
+        realText.erase(realText.begin() + realText.size() - fool, realText.end());
 
-        for (size_t i = 0; i < readed; i++)
-            buffer_cpy.push_back(static_cast<unsigned char>(buffer[i]));
-        auto decoded = d.decode(buffer_cpy, fool);
+        auto decoded = d.decode(realText);
 
         //for (auto i : decoded) std::cout << (char)i;
         char fw_buffer[fw.MAX_WRITE];
@@ -69,11 +68,10 @@ void decompressor::decompress(std::string to) {
             if (cnt == fw.MAX_WRITE) {
                 cnt = 0;
                 fw.write(fw_buffer, fw.MAX_WRITE);
-            } else {
-                if (i + 1 == decoded.size()) {
-                    fw.write(fw_buffer, cnt);
-                }
             }
+        }
+        if (cnt) {
+            fw.write(fw_buffer, cnt);
         }
     }
 

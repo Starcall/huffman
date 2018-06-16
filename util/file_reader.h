@@ -8,20 +8,19 @@
 #include <fstream>
 
 struct file_reader {
-    file_reader(){};
+    file_reader() = default;;
     explicit file_reader(std::string file_name);
     ~file_reader();
     void open(std::string file_name);
     size_t read(char* buffer, size_t buffer_size);
     bool eof();
-    void reset();
-    const size_t MAX_READ = 1024 ;
+    const size_t MAX_READ = 2048;
     size_t rest();
 
 
 private:
     std::ifstream sstream;
-    size_t len;
+    size_t len{};
 };
 
 #endif //HAFFMUN_FILE_READER_H

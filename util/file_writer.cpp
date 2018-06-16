@@ -8,9 +8,6 @@
 file_writer::file_writer(std::string file_name) {
     sstream.clear();
     sstream.open(file_name, std::ofstream::out | std::ofstream::binary);
-    if (!sstream.is_open()) {
-        //TODO exeption
-    }
 }
 
 file_writer::~file_writer() {

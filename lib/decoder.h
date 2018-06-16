@@ -12,7 +12,7 @@ struct decoder {
     explicit decoder(std::vector<size_t> &frequency) : tree(frequency){
         tree.reset();
     };
-    std::vector<unsigned char> decode(std::vector<unsigned char> &text, size_t);
+    std::vector<unsigned char> decode(std::vector<unsigned char>&);
 
 private:
     huffman_tree tree;

@@ -5,6 +5,9 @@
 #include "compressor.h"
 #include "decompressor.h"
 #include <ctime>
+
+
+
 int main(int argc, char* argv[]) {
 
     if (argc == 2) {

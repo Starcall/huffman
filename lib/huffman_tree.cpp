@@ -14,7 +14,7 @@ huffman_tree::huffman_tree(std::vector<size_t> &frequency) {
     size_t counter = 0;
     for (size_t i = 0; i < frequency.size(); i++) {
         if (frequency[i] != 0) {
-            data.emplace(new node(i, frequency[i], nullptr, nullptr, true));
+            data.push(new node(i, frequency[i], nullptr, nullptr, true));
             counter++;
         }
     }
@@ -23,7 +23,7 @@ huffman_tree::huffman_tree(std::vector<size_t> &frequency) {
         data.pop();
         node* second_node = data.top();
         data.pop();
-        data.emplace(new node(0, first_node->count + second_node->count, first_node, second_node, false));
+        data.push(new node(0, first_node->count + second_node->count, first_node, second_node, false));
     }
     if (counter == 0) return;
     this->root = data.top();
@@ -39,19 +39,19 @@ huffman_tree::huffman_tree(std::vector<size_t> &frequency) {
 }
 
 uint64_t huffman_tree::get_code(unsigned char symbol) {
-    assert(sz[symbol] != 0);
+   // assert(sz[symbol] != 0);
     return codes[symbol];
 }
 
 void huffman_tree::count_codes(huffman_tree::node *cur_node, uint64_t cur_code, size_t depth) {
-    if (cur_node == nullptr)
-        return;
-    count_codes(cur_node->left_child, cur_code << 1, depth + 1);
+    if (cur_node->left_child != nullptr)
+        count_codes(cur_node->left_child, cur_code << 1, depth + 1);
     if (cur_node->term) {
         codes[cur_node->symbol] = cur_code;
         sz[cur_node->symbol] = depth;
     }
-    count_codes(cur_node->right_child, (cur_code << 1) + 1, depth + 1);
+    if (cur_node ->right_child != nullptr)
+        count_codes(cur_node->right_child, (cur_code << 1) + 1, depth + 1);
 }
 
 void huffman_tree::move_left() {
@@ -67,6 +67,7 @@ void huffman_tree::move_right() {
 }
 
 bool huffman_tree::is_leaf() {
+    if (currentNode == nullptr) throw std::runtime_error("Decoded file is corrupted");
     return currentNode->term;
 }
 

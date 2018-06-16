@@ -51,5 +51,6 @@ int main(int argc, char* argv[]) {
             std::cout << "Oups, error " << e.what() << std::endl;
         }
     }
+
     return 0;
 }

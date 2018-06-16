@@ -8,6 +8,8 @@
 #include <cstdio>
 #include <utility>
 #include <vector>
+#include <cstdint>
+
 
 
 struct huffman_tree {

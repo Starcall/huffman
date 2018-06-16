@@ -8,7 +8,7 @@
 #include <utility>
 
 #include "huffman_tree.h"
-
+#include "algorithm"
 struct encoder {
     //encoder() = delete;
     explicit encoder(std::vector<size_t> &data) : tree(data) {};
